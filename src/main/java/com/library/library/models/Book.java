@@ -5,10 +5,11 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.validation.constraints.NotBlank;
 
 import jakarta.validation.constraints.NotNull;
-
 
 import java.util.Objects;
 
@@ -17,22 +18,28 @@ public class Book {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+
     @Column(nullable = false, name = "title")
     @NotBlank(message = "Title is mandatory")
     private String title;
-    @Column(nullable = false, name = "author")
 
-    @NotBlank(message = "Author is mandatory")
-    private String author;
+    @ManyToOne(optional = false)
+    // @NotNull(message = "Author is mandatory")
+    @JoinColumn(name = "author_id", referencedColumnName = "id", nullable = false)
+    private Author author;
+
     @Column(nullable = false, name = "published_year")
     @NotNull(message = "Published year is mandatory")
-
     private int publischedYear;
+
+    // @ManyToOne
+    // @JoinColumn(name = "author_id", nullable = false);
+    // private Author author;
 
     public Book() {
     }
 
-    public Book(int id, String title, String author, int publischedYear) {
+    public Book(int id, String title, Author author, int publischedYear) {
         this.id = id;
         this.title = title;
         this.author = author;
@@ -55,11 +62,11 @@ public class Book {
         this.title = title;
     }
 
-    public String getAuthor() {
+    public Author getAuthor() {
         return this.author;
     }
 
-    public void setAuthor(String author) {
+    public void setAuthor(Author author) {
         this.author = author;
     }
 
@@ -81,7 +88,7 @@ public class Book {
         return this;
     }
 
-    public Book author(String author) {
+    public Book author(Author author) {
         setAuthor(author);
         return this;
     }
